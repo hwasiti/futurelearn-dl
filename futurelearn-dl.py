@@ -374,10 +374,16 @@ def downloadURLsInPage(course_id, week_id, step_id, week_num, content, DOWNLOAD_
 
         download_dir = OP_DIR + '/' + course_id + '/week' + str(week_num)
 
-        if DOWNLOAD_TYPE == 'mp4' or DOWNLOAD_TYPE == 'mp3':
+        if DOWNLOAD_TYPE == 'mp4':
+            debug(4, "MATCHING URL=<<{}>>".format(url +'/hd'))
+            urls.append( url  +'/hd')
+            downloadURLInPage(url +'/hd', download_dir, DOWNLOAD_TYPE, page_title)
+        
+        elif DOWNLOAD_TYPE == 'mp3':
             debug(4, "MATCHING URL=<<{}>>".format(url))
             urls.append( url )
             downloadURLInPage(url, download_dir, DOWNLOAD_TYPE, page_title)
+
         else:
             # With other types, check that the url ends with the type e.g. ".pdf"
             if lurl[-(1+len(DOWNLOAD_TYPE)):] == "." + DOWNLOAD_TYPE:
@@ -426,7 +432,19 @@ def downloadURLInPage(url, download_dir, DOWNLOAD_TYPE, page_title):
     #filename = course_id + '-' + title
     filename = title
 
-    if DOWNLOAD_TYPE == 'mp4' or DOWNLOAD_TYPE == 'mp3':
+    if DOWNLOAD_TYPE == 'mp4' :
+        # We need to create an 'x.mp4' filename from the url of the form
+        #    'https://view.vzaar.com/2088434/video/hd':
+        
+        # Let's strip of the /video at the end:
+        urlUptoNumber = url [ :url.rfind('/video/hd') ]
+
+        # Get the filename from the url after the last slash (where the number is):
+        filename = filename +  '_' + urlUptoNumber[ urlUptoNumber.rfind('/') + 1: ] + "." + DOWNLOAD_TYPE
+
+        ofile= download_dir + '/' + filename
+        downloadURLToFile(url, ofile, DOWNLOAD_TYPE)
+    elif DOWNLOAD_TYPE == 'mp3':
         # We need to create an 'x.mp4' filename from the url of the form
         #    'https://view.vzaar.com/2088434/video':
         
@@ -582,7 +600,7 @@ def getCoursePage(course_id):
 ## -- Main: --------------------------------------------------------
 
 TMP_DIR = os.getenv('TMP_DIR', default='/tmp/FUTURELEARN_DL')
-OP_DIR  = os.getenv('OP_DIR',  default=os.getenv('HOME') + '/Education/FUTURELEARN')
+OP_DIR  = os.getenv('OP_DIR',  default='/Education/FUTURELEARN')
 
 debug(2, "Using temp   dir <{}>".format(TMP_DIR))
 debug(2, "Using Output dir <{}>".format(OP_DIR))
