@@ -3,7 +3,7 @@
 This repo is forked from:
 https://github.com/mjbright/futurelearn-dl
 
-This is identical to the author's version, but will download HD quality mp4 videos instead of the SD quality. Also corrected a bug in line 585 related to assigning the output path of the files saved. Now the output path will be in \Education\FUTURELEARN 
+This is identical to the author's version, but will download HD quality mp4 videos instead of the SD quality. Also corrected a bug in line 603 related to assigning the output path of the files saved. Now the output path will be in \Education\FUTURELEARN 
 
 ----------------------------
 
